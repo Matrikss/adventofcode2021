@@ -10,7 +10,7 @@ def count_increases(list):
     return increases
 
 
-with open('input1.txt') as f:
+with open('input/input1.txt') as f:
     read_data = f.read()
 
     depths = read_data.split('\n')

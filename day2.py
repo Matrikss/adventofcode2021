@@ -2,7 +2,7 @@ FORWARD = 'forward'
 DOWN = 'down'
 UP = 'up'
 
-with open('input2.txt') as f:
+with open('input/input2.txt') as f:
     read_data = f.read()
 
     instructions = read_data.split('\n')

@@ -34,7 +34,7 @@ def find_rating(numbers, wanted, index, function):
     return find_rating(filtered, wanted, index + 1, function)
 
 
-with open('input3.txt') as f:
+with open('input/input3.txt') as f:
     read_data = f.read()
 
     numbers = read_data.split('\n')
