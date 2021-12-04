@@ -50,7 +50,9 @@ def get_score(bingo_board, numbers):
 sequence, bingo_boards = parse_bingo()
 
 final_score = 0
+lose_score = 0
 min_index = math.inf
+max_index = 0
 for board in bingo_boards:
     score, index = get_score(board, sequence)
 
@@ -58,5 +60,9 @@ for board in bingo_boards:
         min_index = index
         final_score = score
 
+    if index > max_index:
+        max_index = index
+        lose_score = score
+
 print(f'Part 1: {final_score}')
-print(f'Part 2: {2}')
+print(f'Part 2: {lose_score}')
