@@ -40,8 +40,9 @@ with open('input/input13.txt') as f:
             folded = paper[:pos, :max_x + 1] + fold[:pos, :max_x + 1]
         else:
             folded = paper[:max_y + 1, :pos] + fold[:max_y + 1, :pos]
-        part1 = len(np.where(folded > 0)[0])
-        break
+        if part1 == 0:
+            part1 = len(np.where(folded > 0)[0])
+        paper = folded
 
     print(f'Part 1: {part1}')
-    print(f'Part 2: {2}')
+    print(f'Part 2: {paper}')  # BFKRCJZU (visually decoded)
