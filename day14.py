@@ -2,6 +2,16 @@ import math
 import re
 import collections
 
+
+def hail_mary(pairs: str, count):
+    if count == 10:
+        return pairs
+    ins = insertions[pairs]
+    one = f'{pairs[0]}{ins}'
+    two = f'{ins}{pairs[1]}'
+    return hail_mary(one, count + 1) + hail_mary(two, count + 1)[1:]
+
+
 with open('input/input14.txt') as f:
     read_data = f.read()
 
@@ -15,17 +25,21 @@ with open('input/input14.txt') as f:
         insertions[broken[0]] = broken[2]
         regexes[broken[0]] = re.compile(f'(?={broken[0]})')
 
-    for _ in range(0, 10):
-        finds = dict()
-        for k, v in insertions.items():
-            for fi in re.finditer(regexes[k], template):
-                finds[fi.regs[0][0]] = v
+    cache = dict()
 
-        sorted_inserts = sorted(finds.keys())
-        offset = 1
-        for i in sorted_inserts:
-            template = f'{template[:i + offset]}{finds[i]}{template[i + offset:]}'
-            offset += 1
+    tst = hail_mary(template[0:2], 0)
+    cache[template[0:2]] = tst[1:]
+    for i in range(1, len(template) - 1):
+        print(i)
+        pair = template[i:i + 2]
+        if pair in cache:
+            tst += cache[pair]
+            continue
+        res = hail_mary(pair, 0)[1:]
+        cache[pair] = res
+        tst += res
+
+    template = tst
 
     letters = list(template)
     frequency = collections.Counter(letters)
