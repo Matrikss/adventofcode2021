@@ -8,23 +8,18 @@ with open('input/input14.txt') as f:
     raw_lines = read_data.split('\n')
     template = raw_lines[0]
     insertions = dict()
+    regexes = dict()
     for i in range(2, len(raw_lines)):
         rline = raw_lines[i]
         broken = rline.split()
         insertions[broken[0]] = broken[2]
+        regexes[broken[0]] = re.compile(f'(?={broken[0]})')
 
     for _ in range(0, 10):
         finds = dict()
         for k, v in insertions.items():
-            count = len(re.findall(f'(?={k})', template))
-            if count > 0:
-                ind = 0
-                for j in range(0, count):
-                    ind = template.index(k, ind)
-                    if ind in finds.keys():
-                        raise Exception('fuck')
-                    finds[ind] = v
-                    ind += 1
+            for fi in re.finditer(regexes[k], template):
+                finds[fi.regs[0][0]] = v
 
         sorted_inserts = sorted(finds.keys())
         offset = 1
