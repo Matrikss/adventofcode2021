@@ -10,15 +10,20 @@ def path_finder(mapa: np.matrix, pos: tuple, previous_pos: set, end_pos: tuple) 
     y_len = mapa.shape[0]
     x = pos[1]
     y = pos[0]
-    adjacency = [(y, x - 1), (y, x + 1), (y - 1, x), (y + 1, x)]
-    valid_adjacency = [i for i in adjacency if 0 <= i[0] < y_len and 0 <= i[1] < x_len]
+    adjacency = [(y, x + 1), (y + 1, x)]
+    valid_adjacency = [i for i in adjacency if i[0] < y_len and i[1] < x_len]
     not_visited = set(valid_adjacency).difference(previous_pos)
+
+    if pos == (0, 0):
+        this_risk = 0
+    else:
+        this_risk = mapa[pos]
 
     lowest = math.inf
     for prox in not_visited:
         cost = path_finder(mapa, prox, previous_pos.union({pos}), end_pos)
         lowest = min(cost, lowest)
-    return mapa[pos] + lowest
+    return this_risk + lowest
 
 
 with open('input/input15.txt') as f:
