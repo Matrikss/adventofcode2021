@@ -1,29 +1,33 @@
-import math
-
+MAX_INT = 999
 import numpy as np
 
 
-def path_finder(mapa: np.matrix, pos: tuple, previous_pos: set, end_pos: tuple) -> int:
-    if pos == end_pos:
-        return mapa[pos]
+def dijkstra(mapa: np.matrix, source: tuple, target: tuple) -> int:
+    dist = np.zeros(mapa.shape, int) + MAX_INT
+    queue = np.zeros(mapa.shape, int) + 1
+
+    dist[source] = 1  # because of the multiplications to find the minimum edge, zero x something is always zero
     x_len = mapa.shape[1]
     y_len = mapa.shape[0]
-    x = pos[1]
-    y = pos[0]
-    adjacency = [(y, x + 1), (y + 1, x)]
-    valid_adjacency = [i for i in adjacency if i[0] < y_len and i[1] < x_len]
-    not_visited = set(valid_adjacency).difference(previous_pos)
+    assert x_len == y_len
 
-    if pos == (0, 0):
-        this_risk = 0
-    else:
-        this_risk = mapa[pos]
+    while len(np.where(queue > 0)[0]) > 0:
+        u = np.argmin(np.multiply(dist, queue))
+        x = u % x_len
+        y = u // x_len
+        # ind = np.unravel_index(u, dist.shape) # alternative
 
-    lowest = math.inf
-    for prox in not_visited:
-        cost = path_finder(mapa, prox, previous_pos.union({pos}), end_pos)
-        lowest = min(cost, lowest)
-    return this_risk + lowest
+        queue[y, x] = MAX_INT
+        if (y, x) == target:
+            return dist[y, x]
+
+        adjacency = [(y, x - 1), (y, x + 1), (y - 1, x), (y + 1, x)]
+        valid_adjacency = [i for i in adjacency if 0 <= i[0] < y_len and 0 <= i[1] < x_len]
+        for vizinho in valid_adjacency:
+            if 0 < queue[vizinho] < MAX_INT:
+                alt = dist[y, x] + mapa[vizinho]
+                if alt < dist[vizinho]:
+                    dist[vizinho] = alt
 
 
 with open('input/input15.txt') as f:
@@ -40,7 +44,7 @@ with open('input/input15.txt') as f:
     x_len = matrix.shape[1]
     y_len = matrix.shape[0]
 
-    part1 = path_finder(matrix, (0, 0), set(), (y_len - 1, x_len - 1))
+    part1 = dijkstra(matrix, (0, 0), (y_len - 1, x_len - 1))
 
-    print(f'Part 1: {part1}')
+    print(f'Part 1: {part1 - 1}')
     print(f'Part 2: {2}')
