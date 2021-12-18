@@ -1,47 +1,38 @@
-import math
 import time
 
 import numpy as np
 
-MAX_INT = 9000
-RANGE = 40
-
-
-def get_min_distance(distances: np.matrix, points_to_consider: set) -> tuple:
-    min_dist = math.inf
-    min_pos = 0
-    for point in points_to_consider:
-        if distances[point] < min_dist:
-            min_dist = distances[point]
-            min_pos = point
-    return min_pos
+RANGE = 85
 
 
 def dijkstra(mapa: np.matrix, source: tuple, target: tuple) -> int:
-    dist = np.zeros(mapa.shape, int) + MAX_INT
-    queue = set()
+    dist = np.zeros(mapa.shape, int) + np.inf
+    queue = np.zeros(mapa.shape, int) + np.inf
 
     for i in range(source[0], target[0] + 1):
         for j in range(source[1], target[1] + 1):
             if -RANGE < i - j < RANGE:
-                queue.add((i, j))
+                queue[i, j] = 1
 
-    dist[source] = 0
+    dist[source] = 1
     x_len = mapa.shape[1]
     y_len = mapa.shape[0]
     assert x_len == y_len
 
-    while len(queue) > 0:
-        y, x = get_min_distance(dist, queue)
+    while len(np.where(queue > 0)[0]) > 0:
+        u = np.argmin(np.multiply(dist, queue))
+        x = u % x_len
+        y = u // x_len
+        # ind = np.unravel_index(u, dist.shape)  # alternative
 
-        queue.remove((y, x))
+        queue[y, x] = np.inf
         if (y, x) == target:
             return dist[y, x]
 
         adjacency = [(y, x - 1), (y, x + 1), (y - 1, x), (y + 1, x)]
         valid_adjacency = [i for i in adjacency if 0 <= i[0] < y_len and 0 <= i[1] < x_len]
         for vizinho in valid_adjacency:
-            if vizinho in queue:
+            if 0 < queue[vizinho] < np.inf:
                 alt = dist[y, x] + mapa[vizinho]
                 if alt < dist[vizinho]:
                     dist[vizinho] = alt
@@ -65,7 +56,7 @@ with open('input/input15.txt') as f:
     part1 = dijkstra(matrix, (0, 0), (y_len - 1, x_len - 1))
     duration = time.time() - start
 
-    print(f'Part 1: {part1} {duration}')
+    print(f'Part 1: {part1 - 1} {duration}')
 
     complete_map = np.zeros((y_len * 5, x_len * 5), int)
 
@@ -80,4 +71,4 @@ with open('input/input15.txt') as f:
     part2 = dijkstra(complete_map, (0, 0), (y_len * 5 - 1, x_len * 5 - 1))
     duration = time.time() - start
 
-    print(f'Part 2: {part2} {duration}')
+    print(f'Part 2: {part2 - 1} {duration}')
