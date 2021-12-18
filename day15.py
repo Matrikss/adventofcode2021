@@ -1,5 +1,6 @@
-MAX_INT = 999999
 import numpy as np
+
+MAX_INT = 999999
 
 
 def dijkstra(mapa: np.matrix, source: tuple, target: tuple) -> int:
