@@ -1,4 +1,4 @@
-MAX_INT = 999
+MAX_INT = 999999
 import numpy as np
 
 
@@ -46,5 +46,16 @@ with open('input/input15.txt') as f:
 
     part1 = dijkstra(matrix, (0, 0), (y_len - 1, x_len - 1))
 
+    complete_map = np.zeros((y_len * 5, x_len * 5), int)
+
+    for i in range(0, complete_map.shape[0]):
+        for j in range(0, complete_map.shape[1]):
+            value = matrix[i % 10, j % 10] + i // 10 + j // 10
+            if value > 9:
+                value -= 9
+            complete_map[i, j] = value
+
+    part2 = dijkstra(complete_map, (0, 0), (y_len * 5 - 1, x_len * 5 - 1))
+
     print(f'Part 1: {part1 - 1}')
-    print(f'Part 2: {2}')
+    print(f'Part 2: {part2 - 1}')
