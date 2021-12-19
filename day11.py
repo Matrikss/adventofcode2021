@@ -16,8 +16,10 @@ with open('input/input11.txt') as f:
 
     total_flashes = 0
     step = 1
-    while step <= 100:
+    while True:
         # print(step)
+        if step == 101:
+            print(f'Part 1: {total_flashes}')
         matrix += 1
         flashed = set()
         flashers = np.where(matrix > 9)
@@ -34,9 +36,9 @@ with open('input/input11.txt') as f:
                 flashed.add((y, x))
                 total_flashes += 1
             flashers = np.where(matrix > 9)
+        if len(flashed) == 100:
+            print(f'Part 2: {step}')
+            exit(0)
         for flashed_octopus in flashed:
             matrix[flashed_octopus] = 0
         step += 1
-
-    print(f'Part 1: {total_flashes}')
-    print(f'Part 2: {2}')
